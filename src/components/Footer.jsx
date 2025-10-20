@@ -56,7 +56,10 @@ export default function Footer() {
             <strong>únicas</strong>
           </h3>
 
-          <a className="footer-privacy" href="/politica">
+          <a
+            className="footer-privacy"
+            href={`${import.meta.env.BASE_URL}#/politica`}
+          >
             _Política de Privacidade
           </a>
 
