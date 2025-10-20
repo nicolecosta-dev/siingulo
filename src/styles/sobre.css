@@ -1,0 +1,193 @@
+/* =========================
+   SOBRE — base da seção
+   ========================= */
+.sobre {
+  background: #010722;
+  padding: 80px 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* container texto + imagem */
+.container-sobre {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* =========================
+   Tipografia (texto)
+   ========================= */
+.sobre-nos.subtitulo {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.9;
+}
+
+.sobre-titulo {
+  font-weight: 500;
+  line-height: 120%;
+  margin-bottom: 20px;
+}
+.sobre-titulo span {
+  font-weight: 700;
+  color: #fff;
+}
+
+.sobre-desc {
+  font-weight: 400;
+  line-height: 150%;
+  color: #fff;
+  max-width: 600px;
+}
+
+/* =========================
+   Imagem lateral
+   ========================= */
+.sobre-img img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* =========================
+   Blocos de destaque
+   ========================= */
+.sobre-destaques {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  text-align: center;
+  border-top: 0.5px solid #525050;
+  padding-top: 80px;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+.sobre-destaques h3 {
+  font-weight: 700;
+  font-size: clamp(32px, 5vw, 50px);
+  line-height: 1;
+  color: #f3771e;
+}
+.sobre-destaques p {
+  font-weight: 700;
+  font-size: clamp(14px, 2.2vw, 20px);
+  line-height: 1.2;
+  color: #fff;
+  margin-top: 10px;
+}
+
+/* ==========================================================
+   FRASE DESLIZANTE (APENAS COM SCROLL — sem animação CSS)
+   Estrutura esperada no JSX:
+   <p class="sobre-slide">
+     <span class="marquee-track" style="transform: translateX(-{offset}px)">
+       <span class="marquee-item">FLEXIBILIDADE...</span>
+       <span class="marquee-item">FLEXIBILIDADE...</span>
+       ...
+     </span>
+   </p>
+   ========================================================== */
+.sobre-slide {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: clamp(24px, 8vh, 100px) 0 0;
+  /* máscara nas bordas para fade in/out da faixa */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+}
+
+/* trilho que se move via JS (transform inline) */
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(40px, 8vw, 120px);
+  white-space: nowrap;
+  will-change: transform;
+  /* NÃO usar animation aqui — movimento vem do scroll */
+}
+
+/* cada cópia da frase (repita várias p/ loop contínuo) */
+.marquee-item {
+  display: inline-block;
+  font-weight: 500;
+  font-size: clamp(28px, 8vw, 50px);
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #006fff1a; /* azul translúcido */
+  margin-top: 100px;
+}
+
+/* destaque opcional em parte do texto, se usar <b> ou <strong> */
+.marquee-item b,
+.marquee-item strong,
+.sobre-slide b,
+.sobre-slide strong {
+  color: #e7490f;
+}
+
+/* acessibilidade: reduzir movimento */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    transform: none !important;
+  }
+}
+
+/* =========================
+   Responsividade
+   ========================= */
+@media (max-width: 1024px) {
+  .container-sobre {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .sobre-desc {
+    margin: 0 auto;
+  }
+  .sobre-img img {
+    max-width: 420px;
+  }
+  .sobre-destaques {
+    flex-direction: column;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sobre {
+    margin-top: -5px; /* manter seu ajuste anterior */
+  }
+  .sobre-texto {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  .sobre-img img {
+    max-width: 360px;
+  }
+  .marquee-item {
+    margin-top: 0px;
+}
+}

@@ -1,0 +1,280 @@
+/* Altura alvo do hero */
+:root {
+  --hero-h: clamp(560px, 86vh, 920px);
+}
+
+/* ===== Base ===== */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+.hero__wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  min-height: var(--hero-h);
+  padding-block: clamp(40px, 8vh, 96px);
+}
+
+/* Conteúdo */
+.hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+.hero__title {
+  font-weight: 500;
+  color: #0f0f15;
+}
+.hero__title span {
+  font-weight: 700;
+}
+.hero__desc {
+  color: #01081d;
+  font-weight: 400;
+  padding-top: 20px;
+  padding-bottom: 60px;
+  max-width: 520px;
+}
+
+/* BG (desktop/mobile) */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #f5f5f7;
+}
+
+/* Arte em <img> (usada no mobile; escondida no desktop/tablet) */
+.hero__art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.hero__art-img {
+  position: absolute;
+  bottom: 0;
+  right: -6vw; /* “vazadinha” lateral no mobile */
+  width: clamp(280px, 88vw, 620px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.12));
+}
+
+/* Ações / botões */
+.hero__actions {
+  display: flex;
+  gap: 18px;
+}
+.btn {
+  display: inline-flex;
+  gap: 8px;
+  padding: 12px 24px;
+  align-items: center;
+  border-radius: 50px;
+  font-size: 18px;
+  justify-content: center;
+  text-decoration: none;
+}
+.btn__icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* variações */
+.btn--primary {
+  background: #e7490f;
+  color: #efefef;
+}
+.btn--outline {
+  white-space: nowrap;
+  color: #e7490f;
+  border: 3px solid #e7490f;
+  background: transparent;
+  font-weight: 600;
+}
+
+/* ===== Desktop/Tablet: arte como background ===== */
+@media (min-width: 768px) {
+  .hero__art,
+  .hero__art-img {
+    display: none !important;
+  }
+  .hero__bg {
+    background: var(--hero-art) no-repeat right calc(-10vw) bottom / auto 105%,
+      #f5f5f7;
+  }
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 767.98px) {
+  .hero__bg {
+    background: #f5f5f7;
+  }
+
+  .container-pad {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .hero__content {
+    max-width: 75%;
+    text-align: left;
+  }
+
+  /* Esconde o outline no mobile e estiliza o primário como link */
+  a.btn.btn--outline {
+    display: none;
+  }
+  a.btn.btn--primary {
+    display: inline-flex;
+    gap: 10px;
+    color: #e7490f;
+    background: transparent;
+    font-weight: 600;
+    padding: 0;
+  }
+
+  .hero__art-img {
+    bottom: 5px;
+    right: -6vw;
+    width: clamp(280px, 88vw, 450px);
+  }
+
+  .hero__desc {
+    max-width: 410px;
+  }
+}
+
+/* Ajustes finos por largura */
+@media (max-width: 585px) {
+  .hero__art-img {
+    width: clamp(280px, 88vw, 400px);
+  }
+}
+@media (max-width: 500px) {
+  .hero__art-img {
+    width: clamp(300px, 88vw, 360px);
+  }
+  .hero__content {
+    max-width: 100%;
+  }
+  .hero__desc {
+    padding-bottom: 20px;
+  }
+}
+
+/* iPhones médios (375–430px) */
+@media (max-width: 430px) and (min-width: 360px) {
+  .hero__art-img {
+    width: 80vw;
+    right: -3vw;
+  }
+}
+/* iPhones pequenos (até 360px) */
+@media (max-width: 360px) {
+  .hero__art-img {
+    width: 80vw;
+    right: -2vw;
+  }
+}
+/* Android grandes (431–520px) */
+@media (min-width: 431px) and (max-width: 520px) {
+  .hero__art-img {
+    width: 100vw;
+    right: -4vw;
+  }
+}
+
+/* ===== Tablet (768–1023px) — arte no BG contida ===== */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .hero__bg {
+    background: var(--hero-art) no-repeat right calc(-10vw) bottom / auto 50%,
+      #f5f5f7;
+  }
+  .hero__wrap {
+    min-height: clamp(520px, 80vh, 800px);
+    padding-block: clamp(40px, 6vh, 80px);
+  }
+  .hero__content {
+    max-width: 560px;
+  }
+  .hero__desc {
+    max-width: 440px;
+    padding-bottom: 50px;
+  }
+}
+
+/* ===== Ultra-wide helper ===== */
+@media (min-width: 1900px) {
+  .hero__bg {
+    background: var(--hero-art) no-repeat right calc(-1vw) bottom / auto 105%,
+      #f5f5f7;
+  }
+}
+
+/* ===== Selo “Referência Nacional” ===== */
+.hero {
+  position: relative;
+}
+.hero__badge {
+  /* posição e tamanho fluidos */
+  position: absolute;
+  left: 30vw;
+  top: clamp(120px, 18vh, 240px);
+  width: clamp(220px, 25vw, 400px);
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  z-index: 3;
+}
+.hero__badge-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  will-change: transform;
+  transition: transform 120ms ease-out;
+}
+
+/* Ajuste da badge por breakpoints */
+@media (max-width: 1700px) {
+  .hero__badge {
+    left: 35vw;
+    width: clamp(240px, 28vw, 400px);
+  }
+}
+@media (max-width: 1250px) {
+  .hero__badge {
+    left: 45vw;
+    width: clamp(220px, 28vw, 380px);
+  }
+}
+@media (max-width: 1220px) {
+  .hero__badge {
+    left: 60vw;
+    width: clamp(200px, 25vw, 380px);
+  }
+}
+
+/* Ocultar selo em telas menores (ajuste se quiser mostrar) */
+@media (max-width: 1100px) {
+  .hero__badge {
+    display: none;
+  }
+}
+
+/* ===== Troca de ícone do botão no mobile ===== */
+/* No JSX, use duas imagens: .icon-desktop e .icon-mobile */
+.btn .icon-mobile {
+  display: none;
+}
+@media (max-width: 767.98px) {
+  .btn .icon-desktop {
+    display: none;
+  }
+  .btn .icon-mobile {
+    display: inline-block;
+  }
+}
