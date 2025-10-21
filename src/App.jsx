@@ -1,14 +1,13 @@
-// src/App.jsx
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { initHoverBubble } from "./lib/hoverBubble";
 
-import Header from "./components/Header.jsx";
 import Hero from "./components/Hero.jsx";
 import SobreNos from "./components/SobreNos.jsx";
 import Diferenciais from "./components/Diferenciais.jsx";
 import Setores from "./components/Setores.jsx";
 import Solucoes from "./components/Solucoes.jsx";
-import Blog from "./components/Blog.jsx"; // seção de blog na home, se quiser manter
+import Blog from "./components/Blog.jsx";
 import HeroEscala from "./components/HeroEscala.jsx";
 import Contato from "./components/Contato.jsx";
 import Footer from "./components/Footer.jsx";
@@ -18,6 +17,12 @@ import BlogPost from "./pages/BlogPost.jsx";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade.jsx";
 
 export default function App() {
+  useEffect(() => {
+    // inicializa o efeito global da bolha de hover
+    const dispose = initHoverBubble();
+    return () => dispose && dispose();
+  }, []);
+
   return (
     <Routes>
       {/* HOME */}
@@ -42,8 +47,11 @@ export default function App() {
       <Route path="/blog" element={<BlogList />} />
       <Route path="/blog/:slug" element={<BlogPost />} />
 
-      {/* POLÍTICA */}
+      {/* POLÍTICA DE PRIVACIDADE */}
       <Route path="/politica" element={<PoliticaPrivacidade />} />
+
+      {/* Fallback — redireciona qualquer rota inválida para a home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

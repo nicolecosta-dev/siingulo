@@ -278,3 +278,123 @@
     display: inline-block;
   }
 }
+/* ====== Micro-motion para CTA e Botões ====== */
+:root{
+  --elev-0: 0 10px 30px rgba(12, 32, 71, 0.08);
+  --elev-1: 0 16px 40px rgba(12, 32, 71, 0.14);
+  --ease-out: cubic-bezier(.22,.61,.36,1);
+  --ease-in: cubic-bezier(.4,0,.2,1);
+}
+
+/* Base comum (transitions suaves) */
+.cta,
+.btn--primary,
+.btn--outline {
+  position: relative;
+  transform: translateZ(0);
+  transition:
+    transform .22s var(--ease-out),
+    box-shadow .22s var(--ease-out),
+    filter .22s var(--ease-out),
+    background-position .35s var(--ease-out),
+    border-color .22s var(--ease-out),
+    color .22s var(--ease-out);
+  will-change: transform, box-shadow;
+}
+
+/* Ícone com deslizinho */
+.cta .btn__icon,
+.btn--primary .btn__icon,
+.btn--outline .btn__icon {
+  transition: transform .22s var(--ease-out), opacity .22s var(--ease-out);
+}
+
+/* Fundo do CTA/Primary com “sheen” sutil (gradiente animável) */
+.cta,
+.btn--primary {
+  background: linear-gradient(90deg, #e7490f 0%, #ef6b3c 50%, #e7490f 100%);
+  background-size: 200% 100%;
+  color: var(--cta-fg);
+  box-shadow: var(--elev-0);
+  border: 0;
+}
+
+/* outline combina com o primário (ghost elegante) */
+.btn--outline {
+  color: #e7490f;
+  border: 2px solid #e7490f;
+}
+
+/* Somente em dispositivos com hover real */
+@media (hover:hover) {
+  .cta:hover,
+  .btn--primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--elev-1);
+    background-position: 100% 0; /* “passa” o gradiente */
+    filter: brightness(1.02);
+  }
+  .btn--outline:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(231,73,15,0.14);
+    border-color: #e7490f;
+    background: rgba(231,73,15,0.08);
+  }
+
+  /* Ícone desliza levinho */
+  .cta:hover .btn__icon,
+  .btn--primary:hover .btn__icon,
+  .btn--outline:hover .btn__icon {
+    transform: translateX(4px);
+  }
+}
+
+/* Press/Active: “aproxima” */
+.cta:active,
+.btn--primary:active,
+.btn--outline:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+
+/* Foco acessível */
+.cta:focus-visible,
+.btn--primary:focus-visible,
+.btn--outline:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 6px rgba(231,73,15,0.45);
+}
+
+/* Respeita usuários que preferem menos animação */
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .btn--primary,
+  .btn--outline,
+  .cta .btn__icon,
+  .btn--primary .btn__icon,
+  .btn--outline .btn__icon {
+    transition: none !important;
+  }
+}
+
+/* ===== Ajustes para seu header existente ===== */
+.cta {
+  /* mantém as paddings que você já usa */
+  padding: 10px 20px;
+  border-radius: 9999px;
+}
+
+/* ===== Ajustes para os botões do Hero ===== */
+.btn--primary {
+  /* já herda a base e o gradiente acima */
+  border-radius: 50px;
+  padding: 12px 24px;
+}
+
+/* Variante secundária para usar no lugar do outline se quiser movimento */
+.btn--outline {
+  border-radius: 50px;
+  padding: 12px 24px;
+}

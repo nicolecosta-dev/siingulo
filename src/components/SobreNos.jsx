@@ -1,5 +1,7 @@
+// src/components/SobreNos.jsx
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/sobre.css";
+import CounterOnView from "../hooks/CounterOnView.jsx"; // <-- caminho corrigido
 
 import pointsImg from "../assets/Points-Siingulo.png";
 
@@ -16,14 +18,13 @@ export default function SobreNos() {
     let pending = 0; // quanto “falta” aplicar
     let lastY = window.scrollY;
     let cycle = 0; // largura do ciclo (metade do conteúdo duplicado)
-    let prefersReduced = window.matchMedia(
+    const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
     const computeCycle = () => {
-      // pegamos a metade, já que o conteúdo está duplicado
       if (trackRef.current) {
-        const half = trackRef.current.scrollWidth / 2;
+        const half = trackRef.current.scrollWidth / 2; // conteúdo duplicado
         cycle = Math.max(half, 1);
       }
     };
@@ -31,13 +32,12 @@ export default function SobreNos() {
     const inViewport = () => {
       if (!sectionRef.current) return false;
       const rect = sectionRef.current.getBoundingClientRect();
-      // considera “ativo” quando ao menos 20% da seção está visível
       const vh = window.innerHeight || 0;
       const visible = Math.max(
         0,
         Math.min(rect.bottom, vh) - Math.max(rect.top, 0)
       );
-      return visible >= vh * 0.2;
+      return visible >= vh * 0.2; // 20% visível
     };
 
     computeCycle();
@@ -45,30 +45,26 @@ export default function SobreNos() {
     window.addEventListener("resize", onResize);
 
     const onScrollish = (e) => {
-      if (prefersReduced) return; // respeita acessibilidade
+      if (prefersReduced) return;
       if (!inViewport()) {
-        // só move quando a seção está na tela
         lastY = window.scrollY;
         return;
       }
 
-      // delta do scroll (funciona para wheel, scroll e touchmove)
       const y = window.scrollY;
       const delta = typeof e.deltaY === "number" ? e.deltaY : y - lastY;
       lastY = y;
 
       // sensibilidade do arrasto horizontal por delta vertical
-      // ex.: 0.35 px por “unidade” de delta
       pending += delta * 0.35;
 
       if (!raf.current) {
         raf.current = requestAnimationFrame(() => {
           setOffset((curr) => {
-            // aplica o pending e normaliza para loop
             const next = curr + pending;
             pending = 0;
-            if (!cycle) return next; // sem medir ainda, só aplica
-            // normaliza no intervalo [0, cycle)
+            if (!cycle) return next;
+            // normaliza para [0, cycle)
             let norm = next % cycle;
             if (norm < 0) norm += cycle;
             return norm;
@@ -120,16 +116,29 @@ export default function SobreNos() {
       {/* Destaques */}
       <div className="sobre-destaques">
         <div>
-          <h3>+15 anos</h3>
-          <p>de experiência no setor gráfico</p>
+          <h3 className="sobre-num">
+            <CounterOnView end={15} duration={1400} />
+          </h3>
+          <p className="p-1">anos de experiência no setor gráfico</p>
         </div>
+
         <div>
-          <h3>+1.000</h3>
-          <p>clientes em todo o Brasil</p>
+          <div>
+            <h3 className="sobre-num">
+              {" "}
+              +
+              <CounterOnView end={1_000_000} duration={1800} suffix="k" />
+            </h3>
+            <p className="p-2">Clientes em todo o Brasil</p>
+          </div>
         </div>
+
         <div>
-          <h3>+50 milhões</h3>
-          <p>de tickets impressos</p>
+          <h3 className="sobre-num">
+            +
+            <CounterOnView end={50} suffix=" mi" duration={1600} />
+          </h3>
+          <p className="p-3">de ticktes impressos</p>
         </div>
       </div>
 
@@ -141,8 +150,6 @@ export default function SobreNos() {
         <span
           className="marquee-track"
           ref={trackRef}
-          // move para a esquerda conforme o scroll; como normalizamos em [0,cycle),
-          // é seguro dar translateX negativo desse offset
           style={{ transform: `translateX(${-offset}px)` }}
         >
           {/* conteúdo duplicado para looping infinito */}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "../styles/contato.css";
 
 import marca from "../assets/logo-escala.png";
@@ -7,9 +7,32 @@ import iconIg from "../assets/instagram.png";
 import iconIn from "../assets/linkedin.png";
 
 export default function Contato() {
+  const sectionRef = useRef(null);
+  const markRef = useRef(null);
+
+  useEffect(() => {
+    const sec = sectionRef.current;
+    const mark = markRef.current;
+    if (!sec || !mark) return;
+
+    // prepara a animação sem risco de sumir se JS não rodar
+    mark.classList.add("will-animate");
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) mark.classList.add("is-inview");
+        else mark.classList.remove("is-inview");
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(sec);
+
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section id="contato" className="contato">
-      <div className="contato-grid">
+      <div className="contato-grid" ref={sectionRef}>
         {/* LADO ESQUERDO — fundo #F5F5F7 */}
         <div className="contato-left">
           <div className="contato-left-inner">
@@ -17,8 +40,7 @@ export default function Contato() {
               Pronto para
               <br />
               levar sua marca
-              <br />
-              a outro nível?
+              <br />a outro nível?
             </h2>
 
             <p className="contato-desc">
@@ -35,7 +57,8 @@ export default function Contato() {
             <address className="contato-address">
               Av. Leoni Crê Bortolosso, 88
               <br />
-              Galpão 6 - Quitaúna, Osasco - SP,<br />
+              Galpão 6 - Quitaúna, Osasco - SP,
+              <br />
               06186-260
             </address>
 
@@ -52,63 +75,81 @@ export default function Contato() {
             </div>
           </div>
         </div>
-<div className="container-contato-right">
+
         {/* LADO DIREITO — fundo branco */}
-        <div className="contato-right">
-          <img src={marca} alt="Siingulo" className="contato-mark" />
-          <form className="contato-form" onSubmit={(e) => e.preventDefault()}>
-            <label className="field">
-              <span>Nome*</span>
-              <input type="text" required />
-            </label>
+        <div className="container-contato-right">
+          {/* .contato-right define a largura final (a marca nunca passa dela) */}
+          <div className="contato-right">
+            {/* Marca alinhada à direita do mesmo container do form */}
+            <img
+              ref={markRef}
+              src={marca}
+              alt=""
+              aria-hidden
+              className="contato-mark"
+            />
 
-            <label className="field">
-              <span>E-mail corporativo*</span>
-              <input type="email" required />
-            </label>
+            <form className="contato-form" onSubmit={(e) => e.preventDefault()}>
+              <label className="field">
+                <span>Nome*</span>
+                <input type="text" required />
+              </label>
 
-            <label className="field">
-              <span>Telefone*</span>
-              <input type="tel" required placeholder="+55" />
-            </label>
+              <label className="field">
+                <span>E-mail corporativo*</span>
+                <input type="email" required />
+              </label>
 
-            <label className="field">
-              <span>Mercado*</span>
-              <select required defaultValue="">
-                <option value="" disabled>
-                  Selecione
-                </option>
-                <option value="alimentos">Alimentos e Bebidas</option>
-                <option value="farmaceutico">Farmacêutico</option>
-                <option value="cosmeticos">Cosméticos e Beleza</option>
-                <option value="petroquimica">Petroquímica e Química</option>
-                <option value="pet">Veterinário & Pet</option>
-                <option value="outros">Outros</option>
-              </select>
-            </label>
+              <label className="field">
+                <span>Telefone*</span>
+                <input type="tel" required placeholder="+55" />
+              </label>
 
-            <label className="field">
-              <span>Mensagem*</span>
-              <textarea rows="4" required></textarea>
-            </label>
+              <label className="field">
+                <span>Mercado*</span>
+                <select required defaultValue="">
+                  <option value="" disabled>
+                    Selecione
+                  </option>
+                  <option value="alimentos">Alimentos e Bebidas</option>
+                  <option value="farmaceutico">Farmacêutico</option>
+                  <option value="cosmeticos">Cosméticos e Beleza</option>
+                  <option value="petroquimica">Petroquímica e Química</option>
+                  <option value="pet">Veterinário & Pet</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </label>
 
-            <label className="field-check">
-              <input type="checkbox" required />
-              <span>
-                Marque aqui se você aceita nossos termos. (Política de
-                Privacidade)
-              </span>
-            </label>
+              <label className="field">
+                <span>Mensagem*</span>
+                <textarea rows="4" required></textarea>
+              </label>
 
-            <button type="submit" className="btn-submit">
-              Enviar Mensagem
-            </button>
+              <label className="field-check">
+                <input type="checkbox" required />
+                <span>
+                  Marque aqui se você aceita nossos termos. (Política de
+                  Privacidade)
+                </span>
+              </label>
 
-            <p className="contato-legal">
-              Ao preencher um formulário em nosso site, você reconhece que seus dados pessoais serão coletados, armazenados e processados por nossa empresa. Esses dados serão usados apenas para fins de contato e gerenciamento de seu pedido ou solicitação. Garantimos que seus dados serão mantidos seguros e não serão compartilhados com terceiros sem seu consentimento expresso. Se você deseja alterar ou excluir seus dados pessoais, entre em contato conosco através dos meios fornecidos em nosso site. Ao enviar o formulário, você concorda com os termos acima mencionados.
-            </p>
-          </form>
-        </div>
+              <button type="submit" className="btn-submit">
+                Enviar Mensagem
+              </button>
+
+              <p className="contato-legal">
+                Ao preencher um formulário em nosso site, você reconhece que
+                seus dados pessoais serão coletados, armazenados e processados
+                por nossa empresa. Esses dados serão usados apenas para fins de
+                contato e gerenciamento de seu pedido ou solicitação. Garantimos
+                que seus dados serão mantidos seguros e não serão compartilhados
+                com terceiros sem seu consentimento expresso. Se você deseja
+                alterar ou excluir seus dados pessoais, entre em contato conosco
+                através dos meios fornecidos em nosso site. Ao enviar o
+                formulário, você concorda com os termos acima mencionados.
+              </p>
+            </form>
+          </div>
         </div>
       </div>
     </section>

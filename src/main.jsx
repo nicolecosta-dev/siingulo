@@ -1,12 +1,15 @@
 // src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { HashRouter, BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./index.css";
 
-// BrowserRouter no DEV (URLs limpas), HashRouter no PROD (GH Pages)
-const Router = import.meta.env.PROD ? HashRouter : BrowserRouter;
+// 🧭 Usa BrowserRouter no ambiente local (localhost) e HashRouter em produção (ex.: GitHub Pages)
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+const Router = isLocal ? BrowserRouter : HashRouter;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-scroll";
+import { HashLink } from "react-router-hash-link";
 import "../styles/footer.css";
 
 import bgMarca from "../assets/logo-footer-laranja.png";
@@ -21,29 +22,29 @@ export default function Footer() {
         <nav className="footer-col nav-footer" aria-label="Rodapé">
           <ul>
             <li>
-              <Link to="sobre" smooth={true} duration={600} offset={-80}>
+              <HashLink smooth to="/#sobre">
                 Sobre nós
-              </Link>
+              </HashLink>
             </li>
             <li>
-              <Link to="diferenciais" smooth={true} duration={600} offset={-80}>
+              <HashLink smooth to="/#diferenciais">
                 Diferenciais
-              </Link>
+              </HashLink>
             </li>
             <li>
-              <Link to="solucoes" smooth={true} duration={600} offset={-80}>
+              <HashLink smooth to="/#solucoes">
                 Soluções
-              </Link>
+              </HashLink>
             </li>
             <li>
-              <Link to="blog" smooth={true} duration={600} offset={-80}>
+              <HashLink smooth to="/#blog">
                 Blog
-              </Link>
+              </HashLink>
             </li>
             <li>
-              <Link to="contato" smooth={true} duration={600} offset={-80}>
+              <HashLink smooth to="/#contato">
                 Contato
-              </Link>
+              </HashLink>
             </li>
           </ul>
         </nav>
@@ -56,12 +57,10 @@ export default function Footer() {
             <strong>únicas</strong>
           </h3>
 
-          <a
-            className="footer-privacy"
-            href={`${import.meta.env.BASE_URL}#/politica`}
-          >
+          {/* Política */}
+          <HashLink className="footer-privacy" to="/politica">
             _Política de Privacidade
-          </a>
+          </HashLink>
 
           <p className="footer-copy">
             Copyright©2025 - Todos os direitos reservados

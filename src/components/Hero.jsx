@@ -83,7 +83,7 @@ export default function Hero() {
             <a
               href="https://w.app/siingulo_comercial"
               target="_blank"
-              className="btn btn--primary"
+              className="btn btn--primary hover-bubble"
               rel="noreferrer"
             >
               <span>Fale com a Siingulo</span>
@@ -94,7 +94,7 @@ export default function Hero() {
             {/* botão com rolagem suave */}
             <a
               href="#sobre"
-              className="btn btn--outline"
+              className="btn btn--outline hover-bubble"
               onClick={handleScrollToSobre}
             >
               <span>Saiba Mais</span>

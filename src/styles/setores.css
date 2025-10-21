@@ -119,16 +119,15 @@
   }
 }
 .embla__slide-setores:last-of-type .setor-card {
-  margin-right: 16px;
+  margin-right: 1px;
 }
-/* ===== Setas do MOBILE: ocultas por padrão */
+
 .setores-arrows {
   display: none;
 }
 
 /* ===== Mobile (≤768px): força a ordem e a posição das setas ===== */
 @media (max-width: 768px) {
-  /* o shell vira coluna pra podermos ordenar tudo */
   .setores-shell {
     display: flex;
     flex-direction: column;
@@ -140,21 +139,21 @@
   }
   .setores-carousel {
     order: 2;
-  } /* o slide */
+  } 
   .setores-arrows {
     order: 3;
-  } /* ↓ setas DEPOIS do slide */
+  } 
   .dots-setores {
     order: 4;
     display: none;
-  } /* dots somem no mobile */
+  } 
 
   .setores-arrows {
     position: static !important;
     display: flex;
     justify-content: center;
     gap: 16px;
-    margin-top: 18px; /* espaço entre imagem e setas */
+    margin-top: 18px; 
   }
 
   .setor-btn {
@@ -173,12 +172,10 @@
     height: auto;
   }
 }
-/* Base para as setas (serve p/ mobile) */
 .setores-arrows {
   display: none;
-} /* desktop não mostra */
+} 
 
-/* ===== Corrige tamanhos das setas no mobile ===== */
 @media (max-width: 768px) {
   .setores-arrows {
     display: flex;
@@ -203,7 +200,6 @@
     transition: transform 0.15s ease, background 0.2s ease;
   }
 
-  /* Força imagens internas a ocuparem tamanho idêntico */
   .setor-btn img {
     width: 18px;
     height: 18px;
@@ -213,7 +209,6 @@
     filter: brightness(0) invert(1);
   }
 
-  /* Equaliza visualmente mesmo que o arquivo tenha borda extra */
   .setor-btn.prev img,
   .setor-btn.next img {
     transform: scale(1.05);
@@ -233,11 +228,11 @@
   }
 
   .setor-btn {
-    width: 58px;              /* ⬆️ aumentei o tamanho */
+    width: 58px;             
     height: 58px;
-    border: none;             /* ❌ remove borda */
+    border: none;           
     border-radius: 9999px;
-    background: transparent;  /* fundo transparente */
+    background: transparent;  
     display: flex;
     align-items: center;
     justify-content: center;
@@ -271,4 +266,25 @@
   .setor-btn:active {
     transform: scale(0.94);
   }
+}
+.setores,
+.setores-shell,
+.setores .embla {
+  overflow: visible;
+}
+
+.setores .embla {
+  margin-inline: -48px;     
+  padding-inline: 48px;     
+}
+
+
+.setores .embla__viewport {
+  overflow: visible;
+}
+
+
+.setores-shell {
+  border-radius: 28px;
+  /* nada de overflow hidden aqui */
 }

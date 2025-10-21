@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+// src/components/Setores.jsx
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../styles/setores.css";
 
 import useEmblaCarousel from "embla-carousel-react";
@@ -7,7 +8,6 @@ import Autoplay from "embla-carousel-autoplay";
 import prevWhite from "../assets/prev-branca.png";
 import nextWhite from "../assets/next-branca.png";
 
-// Imagens
 import imgBebidas from "../assets/setores1.png";
 import imgAlimentos from "../assets/setores2.png";
 import imgFrigorifico from "../assets/setores3.png";
@@ -30,16 +30,31 @@ const DATA = [
 
 export default function Setores() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const sectionRef = useRef(null);
+  const mq = useRef(window.matchMedia("(max-width: 768px)"));
+  const [isMobile, setIsMobile] = useState(mq.current.matches);
+  useEffect(() => {
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.current.addEventListener("change", onChange);
+    return () => mq.current.removeEventListener("change", onChange);
+  }, []);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
+  // opções do Embla (center no mobile, start no desktop)
+  const options = useMemo(
+    () => ({
       loop: true,
-      align: "start",
-      slidesToScroll: 1, // anda UMA por vez
-      containScroll: "keepSnaps", // mantém 1 snap por slide
+      align: isMobile ? "center" : "start",
+      slidesToScroll: 1,
+      containScroll: "keepSnaps",
       skipSnaps: false,
       speed: 10,
-    },
+    }),
+    [isMobile]
+  );
+
+  // Embla
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    options,
     [
       Autoplay({
         delay: 3000,
@@ -50,24 +65,70 @@ export default function Setores() {
     ]
   );
 
+  // reinit quando muda mobile/desktop
+  useEffect(() => {
+    if (emblaApi) emblaApi.reInit(options);
+  }, [emblaApi, options]);
+
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap()); // 0 .. DATA.length-1
+    setSelectedIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
-    onSelect(); // set inicial
+    onSelect();
   }, [emblaApi, onSelect]);
+
+  // 1 card por "scroll" da PÁGINA quando a seção estiver visível
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    let lastY = window.scrollY;
+    let acc = 0;
+    let locked = false;
+    const THRESH = 80;     // px para avançar um card
+    const COOLDOWN = 260;  // ms entre passos
+
+    const isActive = () => {
+      const el = sectionRef.current;
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight || 0;
+      const visible = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+      return visible >= vh * 0.3;
+    };
+
+    const onScroll = () => {
+      if (!isActive()) {
+        lastY = window.scrollY;
+        acc = 0;
+        return;
+      }
+      const y = window.scrollY;
+      const dy = y - lastY;
+      lastY = y;
+
+      acc += dy;
+      if (!locked && Math.abs(acc) >= THRESH) {
+        acc > 0 ? emblaApi.scrollNext() : emblaApi.scrollPrev();
+        acc = 0;
+        locked = true;
+        setTimeout(() => (locked = false), COOLDOWN);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [emblaApi]);
 
   const scrollTo = (index) => emblaApi && emblaApi.scrollTo(index);
 
   return (
-    <section id="setores" className="setores">
+    <section id="setores" className="setores" ref={sectionRef}>
       <div className="setores-shell">
-        {/* Cabeçalho */}
         <div className="setores-head">
           <p className="setores-eyebrow subtitulo">SETORES ATENDIDOS</p>
           <h2 className="setores-title">
@@ -77,7 +138,6 @@ export default function Setores() {
           </h2>
         </div>
 
-        {/* Carrossel */}
         <div className="setores-carousel embla">
           <div className="embla__viewport" ref={emblaRef}>
             <div className="embla__container">
@@ -93,7 +153,8 @@ export default function Setores() {
             </div>
           </div>
         </div>
-        {/* Setas MOBILE (apenas ≤768px, controladas via CSS) */}
+
+        {/* Setas MOBILE */}
         <div className="setores-arrows">
           <button
             type="button"
@@ -112,15 +173,13 @@ export default function Setores() {
             <img src={nextWhite} alt="" />
           </button>
         </div>
-        {/* Dots – 1 por slide (sempre 8) */}
+
         <div className="dots-setores" role="tablist" aria-label="Paginação">
           {DATA.map((_, i) => (
             <button
               key={i}
               type="button"
-              className={`dot-setores ${
-                i === selectedIndex ? "is-active" : ""
-              }`}
+              className={`dot-setores ${i === selectedIndex ? "is-active" : ""}`}
               onClick={() => scrollTo(i)}
               aria-label={`Ir para slide ${i + 1}`}
               aria-selected={i === selectedIndex}

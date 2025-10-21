@@ -180,3 +180,14 @@
 @media (max-width: 768px) {
   .solucoes { padding: 48px 20px; }
 }
+
+/* ===== efeito hover no botão "Fale" ===== */
+.botao-fale {
+  transition: transform 0.25s ease, color 0.25s ease;
+  display: inline-flex;
+}
+
+.botao-fale:hover {
+  color: #011967;                
+}
+

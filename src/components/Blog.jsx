@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/blog.css";
 
 import useEmblaCarousel from "embla-carousel-react";
@@ -108,9 +109,9 @@ export default function Blog() {
               Insights sobre inovação, tecnologia e soluções gráficas para
               marcas que buscam se destacar.
             </p>
-            <a href="/blog" className="btn-artigos">
+            <Link to="/blog" className="btn-artigos">
               Leia os artigos <img src={setaIcon} alt="" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

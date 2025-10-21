@@ -72,3 +72,101 @@ p {
     font-size: clamp(16px, 2vw, 20px);
   }
 }
+/* ==== Cursor Bubble (global) ==== */
+.hover-bubble {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hover-bubble::after {
+  content: "";
+  position: absolute;
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%) scale(0.001);
+  background: #ff;
+  box-shadow: 0 6px 20px rgba(12, 32, 71, 0.16) inset;
+  opacity: 0;
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.18s ease;
+  pointer-events: none;
+  z-index: -10; /* atrás do texto do botão */
+}
+
+/* ativa só em devices com hover real */
+@media (hover: hover) {
+  .hover-bubble:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* acessibilidade: reduz animação se preferido */
+@media (prefers-reduced-motion: reduce) {
+  .hover-bubble::after {
+    transition: none !important;
+  }
+}
+/* ===== Hover Bubble (fora do botão) ===== */
+:root {
+  --bubble-size: 50px;
+  --bubble-color: rgba(255, 255, 255, 0.7);
+}
+
+.hover-bubble {
+  position: relative;
+  overflow: visible; /* permite a bolha sair do botão */
+  isolation: isolate;
+  transition: color 0.25s ease;
+}
+
+/* bolha que se move com o cursor */
+.hover-bubble::after {
+  content: "";
+  position: absolute;
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+  transform: translate(-50%, -50%) scale(0.001);
+  border-radius: 999px;
+  background: var(--bubble-color);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0; /* atrás do texto */
+  transition: transform 0.25s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.25s ease;
+}
+
+/* conteúdo fica acima da bolha */
+.hover-bubble > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ativa o movimento da bolha */
+@media (hover: hover) {
+  .hover-bubble:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* se tiver ícone dentro, ajusta também */
+.hover-bubble:hover img,
+.hover-bubble:hover svg {
+  filter: none !important; /* remove inversão se tiver */
+  transition: filter 0.25s ease;
+}
+
+/* reduz animações para quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .hover-bubble::after {
+    transition: none !important;
+  }
+}

@@ -92,7 +92,7 @@ export default function Solucoes() {
 
         <a
           href="https://w.app/siingulo_comercial "
-          className="botao-fale"
+          className="botao-fale hover-bubble"
           target="_blank"
         >
           <img src={chatIcon} alt="" />

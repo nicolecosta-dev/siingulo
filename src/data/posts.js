@@ -59,7 +59,7 @@ export const posts = [
   },
   {
     id: 2,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar1",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
@@ -74,7 +74,7 @@ export const posts = [
   },
   {
     id: 3,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar2",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
@@ -89,7 +89,7 @@ export const posts = [
   },
   {
     id: 4,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar3",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
@@ -104,7 +104,7 @@ export const posts = [
   },
   {
     id: 5,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar4",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
@@ -119,7 +119,7 @@ export const posts = [
   },
   {
     id: 6,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar5",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
@@ -134,7 +134,7 @@ export const posts = [
   },
   {
     id: 7,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar6",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
@@ -149,7 +149,7 @@ export const posts = [
   },
   {
     id: 8,
-    slug: "in-mold-label-o-que-e-e-quando-usar",
+    slug: "in-mold-label-o-que-e-e-quando-usar7",
     title: "In Mold Label (IML): o que é e quando usar",
     excerpt:
       "Guia rápido: ganhos de qualidade, durabilidade e produtividade na linha de injeção.",
