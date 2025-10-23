@@ -31,7 +31,7 @@ export default function Diferenciais() {
             <img src={img1} alt="Linha de produção" />
           </div>
 
-          <div className="card-azul area-c">
+          <div className="card-texto area-c">
             <h3>PARCERIA ESTRATÉGICA</h3>
             <p>
               Mais do que fornecedores, atuamos como parceiros de longo prazo,

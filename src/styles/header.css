@@ -2,47 +2,54 @@
   --text: #313132;
   --cta-bg: #e7490f;
   --cta-fg: #efefef;
+
+  /* motion tokens */
+  --elev-0: 0 10px 30px rgba(12, 32, 71, 0.08);
+  --elev-1: 0 16px 40px rgba(12, 32, 71, 0.14);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header sticky por cima */
+/* =========================
+   HEADER (pílula “glass”)
+   ========================= */
 .app-header {
   position: relative;
-  top: 0;
   z-index: 120;
 }
+
 .app-header.is-scrolled .header-shell {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Cápsula “glass” */
 .header-shell {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* logo | nav | ações/hamburger */
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 60px;
+
+  max-width: 1200px;
   margin: 16px auto 0;
-  max-width: 1100px;
-  max-height: 100px;
-  padding: 20px 150px;
+  padding: 16px 28px;
+  border-radius: 40px;
 
   background: rgba(255, 255, 255, 0.38);
   -webkit-backdrop-filter: saturate(160%) blur(16px);
   backdrop-filter: saturate(160%) blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: 0 10px 30px rgba(12, 32, 71, 0.08);
+
+  overflow: hidden; /* mantém a cápsula suave */
 }
 
-/* Logo */
 .logo {
   height: 40px;
   width: auto;
 }
 
-/* Nav desktop */
+/* Nav central (desktop) */
 .nav {
+  justify-self: center;
   display: flex;
   gap: 32px;
 }
@@ -55,39 +62,61 @@
 .nav-link:hover,
 .nav-link:focus {
   color: #e7490f;
-  opacity: 1;
 }
-
 .nav-link.active {
   color: #e7490f;
   font-weight: 800;
 }
 
-/* Ações desktop */
+/* Ações (desktop) */
 .actions {
   display: flex;
   align-items: center;
   gap: 16px;
 }
+
 .cta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
   border-radius: 9999px;
-  background: var(--cta-bg);
   color: var(--cta-fg);
   text-decoration: none;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--elev-0);
+  border: 0;
+
+  /* sheen/gradiente animável */
+  background: linear-gradient(90deg, #e7490f 0%, #ef6b3c 50%, #e7490f 100%);
+  background-size: 200% 100%;
+
+  transform: translateZ(0);
+  transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out),
+    filter 0.22s var(--ease-out), background-position 0.35s var(--ease-out),
+    color 0.22s var(--ease-out);
 }
-.cta:hover {
-  filter: brightness(1.05);
-}
-.cta-icon {
-  height: 16px;
+.cta .cta-icon {
   width: 16px;
+  height: 16px;
+}
+@media (hover: hover) {
+  .cta:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--elev-1);
+    background-position: 100% 0;
+    filter: brightness(1.02);
+  }
+}
+.cta:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
+.cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 6px rgba(231, 73, 15, 0.45);
 }
 
+/* Social (desktop e mobile) */
 .social {
   display: flex;
   align-items: center;
@@ -109,289 +138,7 @@
 
 /* Hambúrguer (mobile) */
 .hamburger {
-  display: none;
-  height: 38px;
-  width: 38px;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: transparent;
-  border-radius: 10px;
-}
-.hamburger span {
-  display: block;
-  height: 2px;
-  width: 18px;
-  background: #333;
-  margin: 3px 0;
-}
-
-/* Breakpoints */
-@media (max-width: 1024px) {
-  .header-shell {
-    padding: 16px 32px;
-    border-radius: 28px;
-    max-height: none;
-  }
-}
-@media (max-width: 768px) {
-  .nav,
-  .actions {
-    display: none;
-  }
-  .hamburger {
-    display: inline-flex;
-  }
-}
-
-/* ====== MENU MOBILE OVERLAY (fixo) ====== */
-.mobile-overlay {
-  /* position: fixed;*/
-  inset: 0;
-  z-index: 190;
-  background: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(2px);
-}
-
-.mobile-panel {
-  /*position: fixed;*/
-  top: 8px;
-  left: 0;
-  right: 0;
-  z-index: 200;
-}
-
-.mobile-card {
-  background: rgba(255, 255, 255, 0.38);
-  backdrop-filter: saturate(160%) blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 10px 30px rgba(12, 32, 71, 0.08);
-  border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 85%;
-  width: calc(100% - 24px);
-}
-
-.mobile-nav {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-.mobile-nav a {
-  color: var(--text);
-  text-decoration: none;
-  padding: 8px 6px;
-  border-radius: 8px;
-}
-.mobile-nav a:hover {
-  background: rgba(0, 0, 0, 0.035);
-}
-
-.mobile-cta {
-  width: fit-content;
-  margin-top: 4px;
-}
-.mobile-social {
-  margin-top: 8px;
-}
-.mobile-brand {
-  display: flex;
-  align-items: center;
-  justify-content: center; /* centralizado */
-  padding: 6px 0 12px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-.mobile-logo {
-  height: 28px;
-  width: auto;
-}
-/* === largura da pílula do header como na IMAGEM 01 === */
-@media (min-width: 1280px) {
-  .header-shell {
-    max-width: 1200px; /* era 1838px */
-    padding: 16px 28px; /* bordas internas menores */
-    border-radius: 40px;
-  }
-}
-@media (max-width: 1200px) {
-  .header-shell {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 60px;
-    margin: 16px auto 0;
-    max-width: 1200px;
-    max-height: 100px;
-    padding: 20px 50px;
-  }
-}
-
-@media (max-width: 1000px) {
-  .header-shell {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    position: relative;
-    overflow: hidden;
-    border-radius: 60px;
-    margin: 16px auto 0;
-    max-width: 1200px;
-    max-height: 100px;
-    padding: 20px 50px;
-  }
-}
-/* --- Header (≤ 768px) --- */
-@media (max-width: 768px) {
-  .app-header {
-    top: env(safe-area-inset-top, 0);
-  }
-
-  .header-shell {
-    max-width: 85% !important;
-    width: calc(100% - 24px) !important;
-    margin: 0 !important;
-    padding: 12px 18px !important;
-    border-radius: 60px !important;
-    gap: 10px !important;
-    margin-top: 10px !important;
-  }
-
-  .logo {
-    height: 22px; /* reduz um pouco */
-    width: auto;
-  }
-
-  .nav,
-  .actions {
-    display: none !important; /* some no mobile */
-  }
-
-  .hamburger {
-    display: inline-flex;
-    height: 40px;
-    width: 40px;
-    border-radius: 10px;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .hamburger:active {
-    background: rgba(0, 0, 0, 0.06);
-  }
-
-  .social {
-    gap: 8px;
-  }
-  .social a {
-    padding: 4px;
-  }
-  .social img {
-    height: 18px;
-    width: 18px;
-  }
-}
-
-/* telas bem estreitas */
-@media (max-width: 380px) {
-  .header-shell {
-    width: calc(100% - 16px);
-    padding: 10px 12px;
-    border-radius: 14px;
-  }
-  .logo {
-    height: 20px;
-  }
-}
-/* =========================
-   HEADER – CENTRALIZAR NAV
-   ========================= */
-
-/* Troca o flex por grid com 3 colunas:
-   [logo] [nav central] [acoes/hamburger] */
-.header-shell {
-  display: grid !important;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-}
-
-/* Nav centralizada no eixo horizontal do header */
-.nav {
-  justify-self: center; /* mantém o bloco no centro da cápsula */
-  align-items: center;
-}
-
-/* Ações à direita */
-.actions {
-  justify-self: end;
-}
-
-/* Hambúrguer fica à direita, como as ações */
-.hamburger {
-  justify-self: end;
-}
-
-/* Opcional: se quiser "centro perfeito" independente da largura da logo/ações,
-   descomente abaixo para centralizar o .nav no 50% da cápsula:
-   (usa position relative no shell e absolute no nav)
-*/
-
-/*
-.header-shell { position: relative !important; }
-.nav {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-*/
-
-/* =========================
-   BREAKPOINT DO HAMBÚRGUER
-   ========================= */
-
-/* ≤1000px: aparece hambúrguer; some nav/actions; mantém logo à esquerda
-   e hambúrguer à direita, seguindo a ideia do desktop */
-@media (max-width: 1000px) {
-  .nav,
-  .actions {
-    display: none !important;
-  }
-  .hamburger {
-    display: inline-flex !important;
-  }
-
-  /* pílula com respiro no mobile/tablet */
-  .header-shell {
-    max-width: 100%;
-    width: calc(100% - 24px);
-    margin: 8px auto 0;
-    padding: 12px 14px; /* reduz o padding lateral no mobile */
-    border-radius: 18px;
-    gap: 10px;
-  }
-
-  .logo {
-    height: 24px;
-    width: auto;
-  }
-}
-
-/* Ajuste fino para telas muito estreitas */
-@media (max-width: 380px) {
-  .header-shell {
-    width: calc(100% - 16px);
-    padding: 10px 12px;
-    border-radius: 16px;
-  }
-  .logo {
-    height: 22px;
-  }
-}
-.hamburger {
-  display: none; /* só aparece no mobile */
+  display: none; /* aparece no ≤1000px */
   height: 40px;
   width: 40px;
   border: 0;
@@ -400,75 +147,22 @@
   align-items: center;
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s ease, background 0.2s ease;
+  justify-self: end;
 }
-
 .hamburger:active {
+  transform: scale(0.96);
   background: rgba(0, 0, 0, 0.06);
 }
-
 .hamburger-icon {
   width: 22px;
   height: 22px;
   display: block;
 }
-/* ===== Pill centrada e colunas equilibradas ===== */
-.header-shell {
-  display: grid !important;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  max-width: 1200px; /* largura agradável */
-  margin: 16px auto 0;
-  padding: 16px 28px;
-  border-radius: 40px;
-  background: rgba(255, 255, 255, 0.38);
-  -webkit-backdrop-filter: saturate(160%) blur(16px);
-  backdrop-filter: saturate(160%) blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 10px 30px rgba(12, 32, 71, 0.08);
-}
-.nav {
-  justify-self: center;
-  display: flex;
-  gap: 32px;
-}
-.actions,
-.hamburger {
-  justify-self: end;
-}
 
-/* ===== Quebras ===== */
-@media (max-width: 1000px) {
-  .nav,
-  .actions {
-    display: none !important;
-  }
-  .hamburger {
-    display: inline-flex !important;
-  }
-  .header-shell {
-    max-width: 100% !important;
-    width: calc(100% - 24px);
-    margin: 8px auto 0;
-    padding: 12px 14px;
-    border-radius: 18px;
-    gap: 10px;
-  }
-  .logo {
-    height: 24px;
-  }
-}
-@media (max-width: 380px) {
-  .header-shell {
-    width: calc(100% - 16px);
-    padding: 10px 12px;
-    border-radius: 16px;
-  }
-  .logo {
-    height: 22px;
-  }
-}
-
-/* ===== Overlay + Drawer animado (estilo valid) ===== */
+/* =========================
+   MENU MOBILE (overlay + drawer)
+   ========================= */
 .mobile-overlay {
   position: fixed;
   inset: 0;
@@ -484,17 +178,17 @@
   pointer-events: auto;
 }
 
-/* Drawer da direita */
+/* Drawer */
 .mobile-panel {
   position: fixed;
   top: 0;
   right: 0;
   height: 100vh;
   z-index: 200;
+  padding: 8px;
   transform: translateX(110%);
   transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
-  padding: 8px;
 }
 .mobile-panel.is-open {
   transform: translateX(0);
@@ -505,44 +199,64 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-width: 320px;
+  margin-left: 20px;
+  padding: 16px;
+  border-radius: 22px;
+
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: saturate(160%) blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 22px;
-  padding: 16px;
   box-shadow: -12px 0 40px rgba(12, 32, 71, 0.16);
-  max-width: 320px;
-  margin-left: 20px;
 }
 
 .mobile-brand {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 6px 0 12px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 .mobile-logo {
   height: 28px;
 }
+.mobile-close {
+  border: 0;
+  background: transparent;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.mobile-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: rotate(90deg);
+}
+.mobile-close img {
+  height: 20px;
+  width: 20px;
+  display: block;
+}
 
 .mobile-nav {
   display: grid;
   gap: 12px;
+  margin-bottom: 10px;
 }
 .mobile-nav a {
   color: var(--text);
   text-decoration: none;
   padding: 12px 8px;
   border-radius: 10px;
-  transition: transform 0.16s ease, background 0.2s ease;
-}
-.mobile-nav a:active {
-  transform: scale(0.98);
+  transition: transform 0.16s var(--ease-out), background 0.2s ease;
 }
 .mobile-nav a:hover {
   background: rgba(0, 0, 0, 0.04);
+}
+.mobile-nav a:active {
+  transform: scale(0.98);
 }
 
 .mobile-cta {
@@ -555,62 +269,87 @@
   gap: 10px;
 }
 
-/* ===== Botão hamburger com micro-efeito ===== */
-.hamburger {
-  display: none;
-  height: 40px;
-  width: 40px;
-  border: 0;
-  background: transparent;
-  border-radius: 10px;
-  align-items: center;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.18s ease, background 0.2s ease;
-}
-.hamburger:active {
-  transform: scale(0.96);
-  background: rgba(0, 0, 0, 0.06);
-}
-.hamburger-icon {
-  width: 22px;
-  height: 22px;
-  display: block;
-}
-
-/* ===== Suaviza a pílula quando o menu abre ===== */
+/* Suaviza a pílula quando o menu abre */
 .app-header.menu-open .header-shell {
   transform: translateZ(0);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
   box-shadow: 0 18px 40px rgba(12, 32, 71, 0.12);
 }
-/* ===== Botão X no topo do menu ===== */
-.mobile-brand {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* logo à esquerda, X à direita */
-  padding: 6px 0 12px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+/* =========================
+   RESPONSIVO
+   ========================= */
+
+/* Tablets e abaixo: esconde nav/actions, mostra hambúrguer */
+@media (max-width: 1000px) {
+  .nav,
+  .actions {
+    display: none !important;
+  }
+  .hamburger {
+    display: inline-flex !important;
+  }
+  .logo {
+    height: 24px;
+  }
+
+  .header-shell {
+    max-width: 100%;
+    width: calc(100% - 24px);
+    margin: 8px auto 0;
+    padding: 12px 14px;
+    border-radius: 18px;
+    gap: 10px;
+  }
 }
 
-.mobile-close {
-  border: 0;
-  background: transparent;
-  padding: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background 0.2s ease, transform 0.2s ease;
+/* Mobile “estreito” */
+@media (max-width: 768px) {
+  .app-header {
+    top: env(safe-area-inset-top, 0);
+  }
+  .header-shell {
+    max-width: 85%;
+    width: calc(100% - 24px);
+    margin: 10px auto 0;
+    padding: 12px 18px;
+    border-radius: 22px;
+  }
 }
 
-.mobile-close:hover {
-  background: rgba(0, 0, 0, 0.05);
-  transform: rotate(90deg);
+/* Muito estreito */
+@media (max-width: 380px) {
+  .header-shell {
+    width: calc(100% - 16px);
+    padding: 10px 12px;
+    border-radius: 16px;
+  }
+  .logo {
+    height: 22px;
+  }
 }
 
-.mobile-close img {
-  height: 20px;
-  width: 20px;
-  display: block;
+/* =========================
+   ACESSIBILIDADE / REDUCE MOTION
+   ========================= */
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none !important;
+  }
+  .hamburger {
+    transition: none !important;
+  }
+  .mobile-overlay,
+  .mobile-panel {
+    transition: none !important;
+  }
+}
+
+/* =========================
+   COMPAT: header dentro do hero
+   (garante que o header fique sobre a arte do hero)
+   ========================= */
+.hero__header {
+  position: relative;
+  z-index: 5;
 }

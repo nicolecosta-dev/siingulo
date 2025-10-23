@@ -21,27 +21,27 @@ export default function Footer() {
         {/* Coluna central */}
         <nav className="footer-col nav-footer" aria-label="Rodapé">
           <ul>
-            <li>
+            <li className="hover-bubble">
               <HashLink smooth to="/#sobre">
                 Sobre nós
               </HashLink>
             </li>
-            <li>
+            <li className="hover-bubble">
               <HashLink smooth to="/#diferenciais">
                 Diferenciais
               </HashLink>
             </li>
-            <li>
+            <li className="hover-bubble">
               <HashLink smooth to="/#solucoes">
                 Soluções
               </HashLink>
             </li>
-            <li>
+            <li className="hover-bubble">
               <HashLink smooth to="/#blog">
                 Blog
               </HashLink>
             </li>
-            <li>
+            <li className="hover-bubble">
               <HashLink smooth to="/#contato">
                 Contato
               </HashLink>
@@ -56,9 +56,8 @@ export default function Footer() {
             ideias em <span>soluções</span> <br />
             <strong>únicas</strong>
           </h3>
-
           {/* Política */}
-          <HashLink className="footer-privacy" to="/politica">
+          <HashLink className="footer-privacy hover-bubble" to="/politica">
             _Política de Privacidade
           </HashLink>
 

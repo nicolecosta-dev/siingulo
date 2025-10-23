@@ -1,89 +1,79 @@
 // src/components/SobreNos.jsx
 import React, { useEffect, useRef, useState } from "react";
 import "../styles/sobre.css";
-import CounterOnView from "../hooks/CounterOnView.jsx"; // <-- caminho corrigido
+import CounterSmooth from "../hooks/CounterSmooth.jsx";
 
 import pointsImg from "../assets/Points-Siingulo.png";
 
 export default function SobreNos() {
-  // refs para controlar o slide
   const sectionRef = useRef(null);
   const trackRef = useRef(null);
-  const raf = useRef(null);
-
-  // deslocamento acumulado em px
   const [offset, setOffset] = useState(0);
+  const baselineY = useRef(null);
+  const cycleRef = useRef(1);
 
   useEffect(() => {
-    let pending = 0; // quanto “falta” aplicar
-    let lastY = window.scrollY;
-    let cycle = 0; // largura do ciclo (metade do conteúdo duplicado)
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const elSection = sectionRef.current;
+    const elTrack = trackRef.current;
+    if (!elSection || !elTrack) return;
 
     const computeCycle = () => {
-      if (trackRef.current) {
-        const half = trackRef.current.scrollWidth / 2; // conteúdo duplicado
-        cycle = Math.max(half, 1);
-      }
+      // metade do conteúdo duplicado para looping perfeito
+      const half = elTrack.scrollWidth / 2;
+      cycleRef.current = Math.max(1, half);
     };
 
-    const inViewport = () => {
-      if (!sectionRef.current) return false;
-      const rect = sectionRef.current.getBoundingClientRect();
+    const onEnter = () => {
+      if (baselineY.current == null) baselineY.current = window.scrollY;
+    };
+
+    const onScroll = () => {
+      // garante baseline assim que a seção tocar a viewport
+      const rect = elSection.getBoundingClientRect();
       const vh = window.innerHeight || 0;
-      const visible = Math.max(
-        0,
-        Math.min(rect.bottom, vh) - Math.max(rect.top, 0)
-      );
-      return visible >= vh * 0.2; // 20% visível
+      const isVisible = rect.bottom > 0 && rect.top < vh;
+      if (isVisible && baselineY.current == null) onEnter();
+
+      if (baselineY.current == null) return;
+
+      // deslocamento determinístico: quanto rolou desde a entrada na viewport
+      const speed = 0.35; // ← ajuste fino da velocidade horizontal
+      const dx = (window.scrollY - baselineY.current) * speed;
+
+      // normaliza para [0, ciclo)
+      const cycle = cycleRef.current;
+      let norm = dx % cycle;
+      if (norm < 0) norm += cycle;
+
+      setOffset(norm);
     };
 
     computeCycle();
-    const onResize = () => computeCycle();
-    window.addEventListener("resize", onResize);
+    onScroll();
 
-    const onScrollish = (e) => {
-      if (prefersReduced) return;
-      if (!inViewport()) {
-        lastY = window.scrollY;
-        return;
-      }
+    const ro = new ResizeObserver(() => {
+      computeCycle();
+      onScroll();
+    });
+    ro.observe(elTrack);
+    window.addEventListener("resize", () => {
+      computeCycle();
+      onScroll();
+    });
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-      const y = window.scrollY;
-      const delta = typeof e.deltaY === "number" ? e.deltaY : y - lastY;
-      lastY = y;
-
-      // sensibilidade do arrasto horizontal por delta vertical
-      pending += delta * 0.35;
-
-      if (!raf.current) {
-        raf.current = requestAnimationFrame(() => {
-          setOffset((curr) => {
-            const next = curr + pending;
-            pending = 0;
-            if (!cycle) return next;
-            // normaliza para [0, cycle)
-            let norm = next % cycle;
-            if (norm < 0) norm += cycle;
-            return norm;
-          });
-          raf.current = null;
-        });
-      }
-    };
-
-    window.addEventListener("wheel", onScrollish, { passive: true });
-    window.addEventListener("scroll", onScrollish, { passive: true });
-    window.addEventListener("touchmove", onScrollish, { passive: true });
+    // font loading pode mudar medidas
+    document.fonts?.ready
+      ?.then(() => {
+        computeCycle();
+        onScroll();
+      })
+      .catch(() => {});
 
     return () => {
-      window.removeEventListener("wheel", onScrollish);
-      window.removeEventListener("scroll", onScrollish);
-      window.removeEventListener("touchmove", onScrollish);
-      window.removeEventListener("resize", onResize);
-      if (raf.current) cancelAnimationFrame(raf.current);
+      ro.disconnect();
+      window.removeEventListener("resize", () => {});
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
@@ -117,28 +107,23 @@ export default function SobreNos() {
       <div className="sobre-destaques">
         <div>
           <h3 className="sobre-num">
-            <CounterOnView end={15} duration={1400} />
+            <CounterSmooth end={15} duration={1200} /> {/* 15 */}
           </h3>
           <p className="p-1">anos de experiência no setor gráfico</p>
         </div>
 
         <div>
-          <div>
-            <h3 className="sobre-num">
-              {" "}
-              +
-              <CounterOnView end={1_000_000} duration={1800} suffix="k" />
-            </h3>
-            <p className="p-2">Clientes em todo o Brasil</p>
-          </div>
+          <h3 className="sobre-num">
+            +<CounterSmooth end={1_000_000} duration={1800} /> {/* 1 mi */}
+          </h3>
+          <p className="p-2">Clientes em todo o Brasil</p>
         </div>
 
         <div>
           <h3 className="sobre-num">
-            +
-            <CounterOnView end={50} suffix=" mi" duration={1600} />
+            +<CounterSmooth end={50_000} duration={2000} /> {/* 50 mi */}
           </h3>
-          <p className="p-3">de ticktes impressos</p>
+          <p className="p-3">de tickets impressos</p>
         </div>
       </div>
 

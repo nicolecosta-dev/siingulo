@@ -287,9 +287,9 @@
     color: #fff;
     font-size: 10px;
   }
-      .footer-logo {
-        margin: 0 auto !important;
-    }
+  .footer-logo {
+    margin: 0 auto !important;
+  }
 }
 
 @media (max-width: 400px) {
@@ -359,4 +359,44 @@
     width: calc(100% - 42vw);
     margin: 60px auto 12px clamp(28vw, 30vw, 32vw);
   }
+}
+/* =========================
+   Hover com degradê animado (nav + política)
+   ========================= */
+
+.nav-footer a,
+.footer-privacy {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.nav-footer a::after,
+.footer-privacy::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f8f8f8 0%, #ececec 100%);
+  background-size: 200% 100%;
+  background-position: 0 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease, background-position 0.4s ease;
+}
+
+.nav-footer a:hover::after,
+.footer-privacy:hover::after {
+  transform: scaleX(1);
+  background-position: 100% 0;
+}
+
+/* movimento suave igual ao CTA */
+.nav-footer a:hover,
+.footer-privacy:hover {
+  transform: translateY(-1px) scale(1.02);
+  filter: brightness(1.05);
 }

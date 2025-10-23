@@ -288,3 +288,39 @@
   border-radius: 28px;
   /* nada de overflow hidden aqui */
 }
+/* ===== DESKTOP mantém o “vazar” ===== */
+@media (min-width: 769px) {
+  .setores .embla {
+    margin-inline: -48px;
+    padding-inline: 48px;
+  }
+  .setores .embla__viewport {
+    overflow: visible;
+  }
+}
+
+/* ===== MOBILE: corrige vazamento e centraliza com peek ===== */
+@media (max-width: 768px) {
+  /* não expande pra fora do card azul */
+  .setores .embla {
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+  }
+
+  /* Embla precisa esconder o que está fora do viewport */
+  .setores .embla__viewport {
+    overflow: hidden !important;
+    padding: 0 20px;                 /* cria “respiro” lateral */
+  }
+
+  /* 20% de peek: card ocupa ~80% da largura visível */
+  .embla__slide-setores {
+    flex: 0 0 calc(100% - 5px) !important;
+    max-width: none !important;
+  }
+
+  /* ajustes de espaçamento */
+  .setores .embla__container { gap: 12px; }
+  .embla__slide-setores:last-of-type .setor-card { margin-right: 0; }
+
+}

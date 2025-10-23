@@ -169,7 +169,7 @@
     flex-direction: column;
     gap: 32px;
     justify-content: center;
-        align-items: center;
+    align-items: center;
   }
 }
 
@@ -191,4 +191,37 @@
 .sobre-destaques h3,
 .sobre-num {
   font-variant-numeric: tabular-nums; /* evita "pulos" de largura entre dígitos */
+}
+/* Números estáveis e elegantes */
+.sobre-num,
+.count {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  font-weight: 700;
+  font-size: clamp(32px, 5vw, 50px);
+  line-height: 1;
+  color: #f3771e;
+  display: inline-block;
+  will-change: opacity, transform;
+  /* micro fade/slide na primeira aparição */
+  animation: countIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes countIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* reduz animações se usuário preferir */
+@media (prefers-reduced-motion: reduce) {
+  .sobre-num,
+  .count {
+    animation: none !important;
+  }
 }
