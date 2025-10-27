@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../styles/solucoes.css";
-import chatIcon from "../assets/chat.png";
 
+import chatIcon from "../assets/chat.png";
 import prevIcon from "../assets/prev.png";
 import nextIcon from "../assets/next.png";
 
@@ -18,31 +18,60 @@ const SOLUCOES = [
 
 export default function Solucoes() {
   const [index, setIndex] = useState(0);
+  const len = SOLUCOES.length;
+  const trackRef = useRef(null);
 
-  const next = () => setIndex((i) => (i + 1) % SOLUCOES.length);
-  const prev = () =>
-    setIndex((i) => (i - 1 + SOLUCOES.length) % SOLUCOES.length);
+  const next = () => setIndex((i) => (i + 1) % len);
+  const prev = () => setIndex((i) => (i - 1 + len) % len);
 
-  // 🎬 autoplay no mobile
+  // autoplay no mobile
   useEffect(() => {
-    const isMobile = window.innerWidth <= 768;
-    if (!isMobile) return;
-
-    const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % SOLUCOES.length);
-    }, 3000); // muda a cada 3s
-
+    if (window.innerWidth > 900) return;
+    const timer = setInterval(next, 3500);
     return () => clearInterval(timer);
   }, []);
 
-  const { title, img } = SOLUCOES[index];
+  // swipe
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+
+    let startX = 0, deltaX = 0, dragging = false;
+
+    const onDown = (e) => {
+      dragging = true;
+      startX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    };
+    const onMove = (e) => {
+      if (!dragging) return;
+      const x = "touches" in e ? e.touches[0].clientX : e.clientX;
+      deltaX = x - startX;
+    };
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      const threshold = 40;
+      if (deltaX > threshold) prev();
+      else if (deltaX < -threshold) next();
+    };
+
+    el.addEventListener("touchstart", onDown, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onUp);
+
+    return () => {
+      el.removeEventListener("touchstart", onDown);
+      el.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onUp);
+    };
+  }, []);
 
   return (
-    <section id="solucoes" className="solucoes">
+    <section id="solucoes" className="solucoes" aria-labelledby="solucoes-title">
       <div className="solucoes-container">
         <div className="solucoes-texto">
           <p className="subtitulo">SOLUÇÕES</p>
-          <h2>
+          <h2 id="solucoes-title">
             Soluções <strong>sob medida</strong>
             <br /> para cada desafio da sua marca.
           </h2>
@@ -50,32 +79,33 @@ export default function Solucoes() {
             Um portfólio completo para atender às demandas de diferentes
             segmentos da indústria. Da embalagem que conquista no ponto de venda
             ao impresso que protege sua marca contra falsificações, cada solução
-            Siingulo é desenvolvida para unir desempenho, inovação e
-            confiabilidade.
+            Siingulo é desenvolvida para unir desempenho, inovação e confiabilidade.
           </p>
         </div>
 
         <div className="solucoes-imagem">
-          {/* setas (desktop/tablet) */}
-          <button
-            className="nav-solucoes prev"
-            onClick={prev}
-            aria-label="Anterior"
-          >
-            <img src={prevIcon} alt="Anterior" />
+          {/* setas (desktop) */}
+          <button className="nav-solucoes prev" onClick={prev} aria-label="Anterior">
+            <img src={prevIcon} alt="" />
           </button>
 
-          <div className="img-wrapper">
-            <img src={img} alt={title} />
-            <h4>{title}</h4>
+          <div className="viewport">
+            <div
+              ref={trackRef}
+              className="track"
+              style={{ transform: `translateX(${-index * 100}%)` }}
+            >
+              {SOLUCOES.map(({ title, img }) => (
+                <figure key={title} className="slide">
+                  <img src={img} alt={title} loading="lazy" decoding="async" />
+                  <figcaption className="slide-title">{title}</figcaption>
+                </figure>
+              ))}
+            </div>
           </div>
 
-          <button
-            className="nav-solucoes next"
-            onClick={next}
-            aria-label="Próximo"
-          >
-            <img src={nextIcon} alt="Próximo" />
+          <button className="nav-solucoes next" onClick={next} aria-label="Próximo">
+            <img src={nextIcon} alt="" />
           </button>
 
           {/* bolinhas (mobile) */}
@@ -91,11 +121,12 @@ export default function Solucoes() {
         </div>
 
         <a
-          href="https://w.app/siingulo_comercial "
+          href="https://w.app/siingulo_comercial"
           className="botao-fale hover-bubble"
           target="_blank"
+          rel="noopener noreferrer"
         >
-          <img src={chatIcon} alt="" />
+          <img src={chatIcon} alt="" width="22" height="22" />
           Fale com a Siingulo
         </a>
       </div>

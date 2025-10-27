@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import { useTweenOnView } from "../hooks/useTweenOnView";
+import { useTweenOnView } from "./useTweenOnView";
 
+// escolha automática de unidade em pt-BR
 function pickUnit(end) {
-  if (end >= 1_000_000_000) return { scale: 1_000_000_000, suffix: " bi" };
-  if (end >= 1_000_000) return { scale: 1_000_000, suffix: " k" };
-  if (end >= 1_000) return { scale: 1_000, suffix: " mi" };
+  if (end >= 1_000_000_000) return { scale: 1_000_000_000, suffix: " bi" }; // bilhão(ões)
+  if (end >= 1_000_000)     return { scale: 1_000_000,     suffix: " mi" }; // milhão(ões)
+  if (end >= 1_000)         return { scale: 1_000,         suffix: " mil" }; // milhar(es)
   return { scale: 1, suffix: "" };
 }
 
@@ -14,37 +15,32 @@ export default function CounterSmooth({
   duration = 2000,
   className = "",
   prefix = "",
-  forceUnit, // opcional: "mil" | "mi" | "bi" | ""
-  decimals, // opcional: nº de casas fixas
-  stripZeros = true, // <- NOVO: remove “,0” automaticamente
+  forceUnit,   // "mil" | "mi" | "bi" | ""
+  decimals,    // casas decimais fixas (opcional)
+  stripZeros = true, // remove “,0” automático
 }) {
   const unit = useMemo(() => {
     if (!forceUnit) return pickUnit(end);
-    if (!forceUnit) return pickUnit(end);
-
     const map = {
-      bi: { scale: 1_000_000_000, suffix: "bi" }, // bilhão
-      mi: { scale: 1_000_000, suffix: "K" }, // milhão → K
-      mil: { scale: 1_000, suffix: "mi" }, // milhar → mil
-      "": { scale: 1, suffix: "" },
+      bi:  { scale: 1_000_000_000, suffix: " bi" },
+      mi:  { scale: 1_000_000,     suffix: " mi" },
+      mil: { scale: 1_000,         suffix: " mil" },
+      "":  { scale: 1,             suffix: "" },
     };
-
     return map[forceUnit] || pickUnit(end);
   }, [end, forceUnit]);
 
   const from = start / unit.scale;
   const to = end / unit.scale;
-
   const { ref, t } = useTweenOnView({ duration, once: true });
 
   const { text, suffix } = useMemo(() => {
     const v = from + (to - from) * t;
 
-    // casas decimais: se não veio "decimals", usa 1 p/ unidades > 1 e 0 p/ inteiro
+    // decimais: auto (1 para k/mi/bi, 0 para unidade) ou forçado
     const autoDecimals = unit.scale > 1 ? 1 : 0;
     let dec = decimals != null ? decimals : autoDecimals;
 
-    // se stripZeros e o valor arredondado não tem parte fracionária, zera decimais
     if (stripZeros && dec > 0) {
       const rounded = Math.round(v * Math.pow(10, dec)) / Math.pow(10, dec);
       if (Number.isInteger(rounded)) dec = 0;

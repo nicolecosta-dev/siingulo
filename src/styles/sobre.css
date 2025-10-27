@@ -1,6 +1,4 @@
-/* =========================
-   SOBRE — base da seção
-   ========================= */
+/* ===== Base da seção ===== */
 .sobre {
   background: #010722;
   padding: 80px 20px;
@@ -10,7 +8,7 @@
   font-family: "Montserrat", sans-serif;
 }
 
-/* container texto + imagem */
+/* grid texto + imagem */
 .container-sobre {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -21,9 +19,7 @@
   padding-bottom: 80px;
 }
 
-/* =========================
-   Tipografia (texto)
-   ========================= */
+/* Tipografia */
 .sobre-nos.subtitulo {
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -47,20 +43,15 @@
   max-width: 600px;
 }
 
-/* =========================
-   Imagem lateral
-   ========================= */
+/* Imagem lateral */
 .sobre-img img {
   width: 100%;
-  max-width: 100%;
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
-/* =========================
-   Blocos de destaque
-   ========================= */
+/* Destaques */
 .sobre-destaques {
   display: flex;
   justify-content: center;
@@ -71,12 +62,7 @@
   max-width: 1500px;
   margin: 0 auto;
 }
-.sobre-destaques h3 {
-  font-weight: 700;
-  font-size: clamp(32px, 5vw, 50px);
-  line-height: 1;
-  color: #f3771e;
-}
+
 .sobre-destaques p {
   font-weight: 500;
   font-size: clamp(14px, 2.2vw, 20px);
@@ -93,12 +79,13 @@
 .p-3 {
   max-width: 200px;
 }
+
+/* Marquee */
 .sobre-slide {
   position: relative;
   overflow: hidden;
   width: 100%;
   margin: clamp(24px, 8vh, 100px) 0 0;
-  /* máscara nas bordas para fade in/out da faixa */
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
@@ -114,8 +101,6 @@
     transparent 100%
   );
 }
-
-/* trilho que se move via JS (transform inline) */
 .marquee-track {
   display: inline-flex;
   align-items: center;
@@ -123,7 +108,6 @@
   white-space: nowrap;
   will-change: transform;
 }
-
 .marquee-item {
   display: inline-block;
   font-weight: 500;
@@ -136,24 +120,42 @@
   margin-top: 50px;
 }
 
-/* destaque opcional em parte do texto, se usar <b> ou <strong> */
-.marquee-item b,
-.marquee-item strong,
-.sobre-slide b,
-.sobre-slide strong {
-  color: #e7490f;
+/* Números (estáveis) */
+.sobre-num,
+.count {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  font-weight: 700;
+  font-size: clamp(32px, 5vw, 50px);
+  line-height: 1;
+  color: #f3771e;
+  display: inline-block;
+  will-change: opacity, transform;
+  animation: countIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes countIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* acessibilidade: reduzir movimento */
+/* Acessibilidade: reduzir movimento */
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
     transform: none !important;
   }
+  .sobre-num,
+  .count {
+    animation: none !important;
+  }
 }
 
-/* =========================
-   Responsividade
-   ========================= */
+/* Responsividade */
 @media (max-width: 1024px) {
   .container-sobre {
     grid-template-columns: 1fr;
@@ -175,7 +177,7 @@
 
 @media (max-width: 768px) {
   .sobre {
-    margin-top: -5px; /* manter seu ajuste anterior */
+    margin-top: -5px;
   }
   .sobre-texto {
     max-width: 90%;
@@ -185,43 +187,19 @@
     max-width: 360px;
   }
   .marquee-item {
-    margin-top: 0px;
-  }
-}
-.sobre-destaques h3,
-.sobre-num {
-  font-variant-numeric: tabular-nums; /* evita "pulos" de largura entre dígitos */
-}
-/* Números estáveis e elegantes */
-.sobre-num,
-.count {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
-  font-weight: 700;
-  font-size: clamp(32px, 5vw, 50px);
-  line-height: 1;
-  color: #f3771e;
-  display: inline-block;
-  will-change: opacity, transform;
-  /* micro fade/slide na primeira aparição */
-  animation: countIn 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
-}
-
-@keyframes countIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    margin-top: 0;
   }
 }
 
-/* reduz animações se usuário preferir */
-@media (prefers-reduced-motion: reduce) {
-  .sobre-num,
-  .count {
-    animation: none !important;
-  }
+/* utilitário para texto acessível somente para leitores de tela */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  white-space: nowrap;
 }

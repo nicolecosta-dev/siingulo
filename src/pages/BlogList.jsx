@@ -8,55 +8,53 @@ import "./blog.css";
 export default function BlogList() {
   useEffect(() => window.scrollTo(0, 0), []);
 
-  // 1) Destaque fixo em todas as páginas
+  // Destaque fixo (primeiro post)
   const featured = posts[0];
 
-  // 2) Paginação só do restante
-  const restAll = posts.slice(1);     // tudo menos o destaque
-  const pageSize = 6;                 // 6 cards por página (abaixo do destaque)
+  // Restante paginado em grupos de 6 (3x2)
+  const restAll = posts.slice(1);
+  const pageSize = 6;
   const totalPages = Math.ceil(restAll.length / pageSize);
-
   const [page, setPage] = useState(0);
 
-  // fatia apenas o restante
   const rest = restAll.slice(page * pageSize, page * pageSize + pageSize);
-
-  const handlePrev = () => setPage((p) => Math.max(p - 1, 0));
-  const handleNext = () => setPage((p) => Math.min(p + 1, totalPages - 1));
+  const hasMore = page < totalPages - 1;
+  const handleLoadMore = () => setPage((p) => Math.min(p + 1, totalPages - 1));
 
   return (
     <>
       <Header />
-      <main className="blog">
+      <main className="blog" role="main">
         <div className="blog-wrap">
           <h1 className="blog-title">
             <span>Blog</span> Siingulo
           </h1>
 
-          {/* Destaque — sempre o mesmo */}
           {featured && (
-            <article className="post-featured">
+            <article className="post-featured" aria-labelledby="pf-title">
               <Link to={`/blog/${featured.slug}`} className="pf-media">
-                <img src={featured.cover} alt={featured.title} />
+                <img src={featured.cover} alt={featured.title} loading="lazy" />
               </Link>
+
               <div className="pf-content">
-                <div className="pf-meta">
+                <div className="pf-meta" aria-label="Categoria">
                   <span>Informação</span>
                 </div>
-                <h2>
+                <h2 id="pf-title">
                   <Link to={`/blog/${featured.slug}`}>{featured.title}</Link>
                 </h2>
                 <p>{featured.excerpt}</p>
+        
               </div>
             </article>
           )}
 
-          {/* Grid inferior: 6 por página (apenas do restante) */}
-          <section className="post-grid">
+          {/* Grid 3x2 */}
+          <section className="post-grid" aria-label="Mais artigos">
             {rest.map((p) => (
               <article key={p.id} className="post-card">
                 <Link to={`/blog/${p.slug}`} className="pc-media">
-                  <img src={p.cover} alt={p.title} />
+                  <img src={p.cover} alt={p.title} loading="lazy" />
                 </Link>
                 <div className="pc-body">
                   <h3 className="pc-title">
@@ -71,25 +69,15 @@ export default function BlogList() {
             ))}
           </section>
 
-          {/* paginação (age só no restante) */}
-          {totalPages > 1 && (
-            <div className="blog-pagination">
+          {/* Botão único “Ver mais posts »” */}
+          {hasMore && (
+            <div className="blog-loadmore">
               <button
-                onClick={handlePrev}
-                disabled={page === 0}
-                className="page-btn"
+                type="button"
+                className="loadmore-btn"
+                onClick={handleLoadMore}
               >
-                ← Anterior
-              </button>
-              <span className="page-info">
-                Página {page + 1} de {totalPages}
-              </span>
-              <button
-                onClick={handleNext}
-                disabled={page === totalPages - 1}
-                className="page-btn"
-              >
-                Próximo →
+                Ver mais posts »
               </button>
             </div>
           )}

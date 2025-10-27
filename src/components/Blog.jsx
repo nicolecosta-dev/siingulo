@@ -1,74 +1,51 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/blog.css";
 
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
-// imagens dos posts
-import post1 from "../assets/blog1.png";
-import post2 from "../assets/blog2.png";
-import post3 from "../assets/blog3.png";
-import post4 from "../assets/blog4.png";
-
 // seta do botão à direita do título
 import setaIcon from "../assets/blog-seta.png";
 
-const POSTS = [
-  {
-    data: "2 de julho de 2025",
-    title: "Uma nova tecnologia que vai elevar a flexografia a outro nível",
-    img: post1,
-  },
-  {
-    data: "15 de maio de 2025",
-    title:
-      "Personalização que conecta: o case “Share a Coke” e o poder dos dados variáveis",
-    img: post2,
-  },
-  {
-    data: "6 de maio de 2025",
-    title: "Seu rótulo tem 5 segundos para convencer",
-    img: post3,
-  },
-  {
-    data: "2 de abril de 2025",
-    title: "De líder em segurança gráfica à inovação em rótulos e etiquetas",
-    img: post4,
-  },
-  {
-    data: "2 de julho de 2025",
-    title: "Uma nova tecnologia que vai elevar a flexografia a outro nível",
-    img: post1,
-  },
-  {
-    data: "15 de maio de 2025",
-    title:
-      "Personalização que conecta: o case “Share a Coke” e o poder dos dados variáveis",
-    img: post2,
-  },
-  {
-    data: "6 de maio de 2025",
-    title: "Seu rótulo tem 5 segundos para convencer",
-    img: post3,
-  },
-  {
-    data: "2 de abril de 2025",
-    title: "De líder em segurança gráfica à inovação em rótulos e etiquetas",
-    img: post4,
-  },
-];
+// 👉 usa os mesmos posts do BlogList/BlogPost
+import { posts } from "../data/posts";
+
+function formatDateISOToPtBr(iso) {
+  // espera "YYYY-MM-DD"
+  try {
+    return new Date(iso + "T00:00:00").toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return iso;
+  }
+}
 
 export default function Blog() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  // Ordena por data (mais novos primeiro) e opcionalmente limita a quantidade
+  const items = useMemo(() => {
+    return [...posts]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      // .slice(0, 12) // <-- se quiser limitar quantos aparecem na home
+      .map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        date: formatDateISOToPtBr(p.date),
+        cover: p.cover,
+      }));
+  }, []);
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
-      loop: true, // 1→2→3→4→1...
+      loop: true,
       align: "start",
-      slidesToScroll: 1, // anda 1 por vez
-      containScroll: "keepSnaps", // garante 1 snap por slide mesmo com 3 visíveis
-      skipSnaps: false,
+      slidesToScroll: 1,
+      containScroll: "keepSnaps",
       speed: 10,
     },
     [
@@ -83,7 +60,7 @@ export default function Blog() {
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap()); // 0..POSTS.length-1
+    setSelectedIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
   useEffect(() => {
@@ -93,6 +70,25 @@ export default function Blog() {
   }, [emblaApi, onSelect]);
 
   const scrollTo = (i) => emblaApi && emblaApi.scrollTo(i);
+
+  // Fallback quando ainda não há posts
+  if (!items.length) {
+    return (
+      <section id="blog" className="blog">
+        <div className="blog-container">
+          <div className="blog-head">
+            <div>
+              <p className="subtitulo">BLOG</p>
+              <h2>Conhecimento que transforma o mercado</h2>
+            </div>
+          </div>
+          <p style={{ textAlign: "center", marginTop: 24 }}>
+            Em breve novos conteúdos.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="blog" className="blog">
@@ -116,20 +112,24 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Carrossel 100vw */}
+      {/* Carrossel 100vw usando os posts do data/posts */}
       <div className="blog-carousel embla">
         <div className="embla__viewport" ref={emblaRef}>
           <div className="embla__container">
-            {POSTS.map((p, i) => (
-              <div className="embla__slide" key={i}>
-                <article className="post-card">
-                  <img src={p.img} alt={p.title} />
+            {items.map((p, i) => (
+              <div className="embla__slide" key={p.slug}>
+                <article className="post-card-home">
+                  <Link to={`/blog/${p.slug}`} className="post-card__media">
+                    <img src={p.cover} alt={p.title} loading="lazy" />
+                  </Link>
                   <div className="post-content">
-                    <p className="data">{p.data}</p>
-                    <h3>{p.title}</h3>
-                    <button className="btn-leia" type="button">
+                    <p className="data">{p.date}</p>
+                    <h3 className="post-title">
+                      <Link to={`/blog/${p.slug}`}>{p.title}</Link>
+                    </h3>
+                    <Link to={`/blog/${p.slug}`} className="btn-leia">
                       Leia mais
-                    </button>
+                    </Link>
                   </div>
                 </article>
               </div>
@@ -138,12 +138,14 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Dots: 1 por post */}
-      <div className="dots-blog">
-        {POSTS.map((_, i) => (
+      {/* Dots: 1 por post (sincronizados com o carrossel) */}
+      <div className="dots-blog" role="tablist" aria-label="Navegação do blog">
+        {items.map((_, i) => (
           <button
             key={i}
             type="button"
+            role="tab"
+            aria-selected={i === selectedIndex}
             className={`dot-blog ${i === selectedIndex ? "is-active" : ""}`}
             onClick={() => scrollTo(i)}
             aria-label={`Ir para post ${i + 1}`}

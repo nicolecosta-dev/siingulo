@@ -10,60 +10,84 @@ import setaLaranja from "../assets/seta-laranja.png";
 
 export default function Hero() {
   const [angle, setAngle] = useState(0);
-  const raf = useRef(null);
+  const rafRef = useRef(null);
+  const sectionRef = useRef(null); // ⬅️ base para calcular o progresso da seção
+  const reduced = useRef(false);
 
   useEffect(() => {
-    let pending = 0;
+    reduced.current = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    const onScrollish = (e) => {
-      const delta =
-        typeof e.deltaY === "number"
-          ? e.deltaY
-          : window.scrollY - (onScrollish._lastY || 0);
-      onScrollish._lastY = window.scrollY;
-      pending += delta * 0.12;
-
-      if (!raf.current) {
-        raf.current = requestAnimationFrame(() => {
-          setAngle((a) => a + pending);
-          pending = 0;
-          raf.current = null;
-        });
-      }
+    const schedule = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(update);
     };
 
-    window.addEventListener("wheel", onScrollish, { passive: true });
-    window.addEventListener("scroll", onScrollish, { passive: true });
-    window.addEventListener("touchmove", onScrollish, { passive: true });
+    const update = () => {
+      rafRef.current = null;
+      if (reduced.current) {
+        setAngle(0);
+        return;
+      }
+      const sec = sectionRef.current;
+      if (!sec) return;
+
+      const rect = sec.getBoundingClientRect();
+      const vh = window.innerHeight || 0;
+
+      // progresso da seção passando pelo viewport (0 → 1 → 2… se quiser mais voltas)
+      // aqui mapeamos “quando a seção entra até sair” para 0..1
+      const total = rect.height + vh; // tempo total de exposição no viewport
+      const passed = Math.min(total, Math.max(0, vh - rect.top));
+      const progress = total > 0 ? passed / total : 0;
+
+      // quantas voltas você quer ao atravessar a seção inteira:
+      const TURNS = 1;
+      const deg = progress * TURNS * 360;
+
+      setAngle(deg);
+    };
+
+    // primeira leitura + listeners (throttle via rAF)
+    update();
+    const onScroll = schedule;
+    const onResize = schedule;
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
 
     return () => {
-      window.removeEventListener("wheel", onScrollish);
-      window.removeEventListener("scroll", onScrollish);
-      window.removeEventListener("touchmove", onScrollish);
-      if (raf.current) cancelAnimationFrame(raf.current);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
-  // === função para scroll suave ao clicar em “Saiba Mais”
   const handleScrollToSobre = (e) => {
     e.preventDefault();
     const target = document.querySelector("#sobre");
     if (target) {
-      const headerOffset = 80; // ajuste se o header for fixo
-      const targetPos = target.offsetTop - headerOffset;
-      window.scrollTo({ top: targetPos, behavior: "smooth" });
+      const headerOffset = 80;
+      const top = Math.max(0, target.offsetTop - headerOffset);
+      window.scrollTo({ top, behavior: "smooth" });
     }
   };
 
   return (
-    <section id="inicio" className="hero">
+    <section
+      id="inicio"
+      className="hero"
+      aria-label="Abertura Siingulo"
+      ref={sectionRef}
+    >
       <div className="hero__header">
         <Header />
       </div>
 
       <div
         className="hero__bg"
-        aria-hidden
+        aria-hidden="true"
         style={{ "--hero-art": `url(${heroArt})` }}
       />
 
@@ -83,36 +107,72 @@ export default function Hero() {
             <a
               href="https://w.app/siingulo_comercial"
               target="_blank"
+              rel="noopener noreferrer"
               className="btn btn--primary hover-bubble"
-              rel="noreferrer"
+              aria-label="Fale com a Siingulo no WhatsApp"
             >
               <span>Fale com a Siingulo</span>
-              <img src={seta} alt="" className="btn__icon icon-desktop" />
-              <img src={setaLaranja} alt="" className="btn__icon icon-mobile" />
+              <img
+                src={seta}
+                alt=""
+                className="btn__icon icon-desktop"
+                width="20"
+                height="20"
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                src={setaLaranja}
+                alt=""
+                className="btn__icon icon-mobile"
+                width="20"
+                height="20"
+                loading="lazy"
+                decoding="async"
+              />
             </a>
 
-            {/* botão com rolagem suave */}
             <a
               href="#sobre"
               className="btn btn--outline hover-bubble"
               onClick={handleScrollToSobre}
+              aria-label="Saiba mais sobre a Siingulo"
             >
               <span>Saiba Mais</span>
-              <img src={setaBaixo} alt="" className="btn__icon" />
+              <img
+                src={setaBaixo}
+                alt=""
+                className="btn__icon"
+                width="20"
+                height="20"
+                loading="lazy"
+                decoding="async"
+              />
             </a>
           </div>
         </div>
 
-        <div className="hero__art">
-          <img src={heroArt} alt="Arte Siingulo" className="hero__art-img" />
+        <div className="hero__art" aria-hidden="true">
+          <img
+            src={heroArt}
+            alt=""
+            className="hero__art-img"
+            width="1240"
+            height="800"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
 
-        <div className="hero__badge" aria-hidden>
+        <div className="hero__badge" aria-hidden="true">
           <img
             src={referenciaNacional}
-            alt="Referência Nacional"
+            alt=""
             className="hero__badge-img"
             style={{ transform: `rotate(${angle}deg)` }}
+            width="400"
+            height="400"
+            decoding="async"
           />
         </div>
       </div>

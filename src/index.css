@@ -12,9 +12,6 @@
 .btn-ghost {
   @apply inline-flex items-center gap-2 rounded-full px-5 py-3 border border-gray-300 hover:bg-gray-100 transition;
 }
-.card {
-  @apply bg-white rounded-2xl p-6 shadow-soft;
-}
 
 /* ====== Base ====== */
 body,
@@ -71,12 +68,6 @@ p {
   p {
     font-size: clamp(16px, 2vw, 20px);
   }
-}
-/* ==== Cursor Bubble (global) ==== */
-.hover-bubble {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
 }
 
 .hover-bubble::after {

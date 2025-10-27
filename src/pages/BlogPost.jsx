@@ -30,39 +30,40 @@ export default function BlogPost() {
     );
   }
 
-  const prev = posts[postIndex - 1];
-  const next = posts[postIndex + 1];
-
   return (
     <>
       <Header />
       <main className="blog">
         <article className="post-single blog-wrap">
           <header className="ps-head">
-    
-            <h2 className="ps-title">{post.title}</h2>
-            <img className="ps-cover" src={post.cover} alt={post.title} />
+            <h1 className="ps-title">{post.title}</h1>
+            <img
+              className="ps-cover"
+              src={post.cover}
+              alt={post.title}
+              loading="lazy"
+            />
             {post.tags?.length > 0 && (
-              <ul className="ps-tags">
-                {post.tags.map((t) => <li key={t}>#{t}</li>)}
+              <ul className="ps-tags" aria-label="Tags">
+                {post.tags.map((t) => (
+                  <li key={t}>#{t}</li>
+                ))}
               </ul>
             )}
           </header>
 
           <section
             className="ps-content"
+            // conteúdo HTML do post (já sanitizado/controlado no seu array)
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
 
-          <nav className="ps-nav">
-            {prev ? (
-              <Link to={`/blog/${prev.slug}`} className="ps-prev">← {prev.title}</Link>
-            ) : <span />}
-            <Link to="/blog" className="ps-list">Voltar ao Blog</Link>
-            {next ? (
-              <Link to={`/blog/${next.slug}`} className="ps-next">{next.title} →</Link>
-            ) : <span />}
-          </nav>
+          {/* CTA único conforme o modelo */}
+          <div className="ps-see-all">
+            <Link to="/blog" className="see-all-btn">
+              Ver mais posts »
+            </Link>
+          </div>
         </article>
       </main>
       <Footer />
