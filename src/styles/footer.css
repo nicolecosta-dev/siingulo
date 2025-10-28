@@ -371,8 +371,7 @@
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.nav-footer a::after,
-.footer-privacy::after {
+.nav-footer a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -388,15 +387,4 @@
   transition: transform 0.35s ease, background-position 0.4s ease;
 }
 
-.nav-footer a:hover::after,
-.footer-privacy:hover::after {
-  transform: scaleX(1);
-  background-position: 100% 0;
-}
 
-/* movimento suave igual ao CTA */
-.nav-footer a:hover,
-.footer-privacy:hover {
-  transform: translateY(-1px) scale(1.02);
-  filter: brightness(1.05);
-}

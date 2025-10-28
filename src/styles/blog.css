@@ -133,7 +133,7 @@
   font-weight: 600;
   color: #000;
   margin: 0 0 16px;
-  line-height: 1.4;
+  line-height: 1 !important;
 }
 .btn-leia {
   background: #011967;

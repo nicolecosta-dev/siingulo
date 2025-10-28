@@ -127,7 +127,7 @@ export default function Blog() {
                     <h3 className="post-title">
                       <Link to={`/blog/${p.slug}`}>{p.title}</Link>
                     </h3>
-                    <Link to={`/blog/${p.slug}`} className="btn-leia">
+                    <Link to={`/blog/${p.slug}`} className="btn-leia" target="_blank">
                       Leia mais
                     </Link>
                   </div>
