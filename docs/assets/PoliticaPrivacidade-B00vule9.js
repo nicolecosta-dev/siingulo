@@ -1,4 +1,4 @@
-import{r as n,j as e,H as l}from"./index-CoTKg70n.js";import c from"./Footer-BVRx9TOZ.js";const p="/siingulo/assets/logo-escala-8Fp2n4u0.png",s=[{id:"introducao",titulo:"Introdução",conteudo:`
+import{r as n,j as e,H as l}from"./index-D1WcM71Q.js";import c from"./Footer-MzWWabnn.js";const p="/siingulo/assets/logo-escala-8Fp2n4u0.png",s=[{id:"introducao",titulo:"Introdução",conteudo:`
       <p>A SIINGULO SOLUÇÕES EM IMPRESSÕES DE SEGURANÇA LTDA., inscrita no CNPJ sob o nº 16.840.903/0001-10,
       com sede na Av. Leonil Crê Bortolosso, 88 – Galpão 6 – Quitaúna, Osasco – SP, CEP 06186-260, reafirma
       seu compromisso com a transparência, a ética e o respeito à privacidade de todos que acessam seu site
